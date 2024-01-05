@@ -1,0 +1,6 @@
+@CTFPlatform_HostAddress = http://localhost:5230
+
+GET {{CTFPlatform_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
