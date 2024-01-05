@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  nginx:
+    image: nginx:1.15
+    ports:
+      - 80:80
+    volumes:
+      - ./default.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - backend
+    networks:
+      ctf-network:
+        aliases:
+            - nginx
+  postgres:
+    image: postgres:15.4-alpine3.18
+    environment:
+      POSTGRES_DB: "CTF"
+      POSTGRES_USER: "dbadmin"
+      POSTGRES_PASSWORD: "secretkey"
+    ports:
+      - "5432:5432"
+    networks:
+      ctf-network:
+        aliases:
+          - postgres
+  backend:
+    build:
+      context: .
+      dockerfile: ./CTFPlatform/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      ctf-network:
+        aliases:
+          - backend
+  react:
+    build: 
+      context: ./front
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      ctf-network:
+        aliases:
+          - react
+networks:
+  ctf-network:
